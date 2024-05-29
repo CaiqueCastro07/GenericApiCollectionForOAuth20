@@ -68,15 +68,7 @@ class ServiceXApiCollection {
 
     }
 
-    #api: AxiosInstance = axios.create({
-        baseURL: ServiceXApiCollection.BASE_URL,
-        headers: {
-            Authorization: `Zoho-oauthtoken `,
-            Accept: "*/*",
-            "Accept-Encoding": 'application/json'
-        },
-        timeout: 45000
-    });
+    #api: AxiosInstance = null
 
     static readonly #giroAccessToken = (): string => {
 
@@ -462,7 +454,7 @@ class ServiceXApiCollection {
 
         }
 
-        return [new Error("Erro fatal não identificado na api da zoho.", { cause: err }), null]
+        return [new Error("Erro fatal não identificado na api.", { cause: err }), null]
 
     }
 
