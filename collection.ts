@@ -200,12 +200,12 @@ class ServiceXApiCollection {
 
                 try {
 
-                    const { data, status } = await axios.post(`https://accounts.zoho.com/oauth/v2/token?refresh_token=${ServiceXApiCollection.REFRESH_TOKEN}&client_id=${ServiceXApiCollection.CLIENT_ID}&client_secret=${ServiceXApiCollection.CLIENT_SECRET}&grant_type=refresh_token`)
+                    const { data, status } = await axios.post(`https://token-auth.com/oauth/v2/token?refresh_token=${ServiceXApiCollection.REFRESH_TOKEN}&client_id=${ServiceXApiCollection.CLIENT_ID}&client_secret=${ServiceXApiCollection.CLIENT_SECRET}&grant_type=refresh_token`)
 
                     const newAccessToken = data?.access_token
 
                     if (!newAccessToken || typeof newAccessToken != 'string') {
-                        return [new Error("Erro ao renovar o Access Token da Zoho.", { cause: { data, status } }), null]
+                        return [new Error("Erro ao renovar o Access Token.", { cause: { data, status } }), null]
                     }
 
                     ServiceXApiCollection.LOCAL_ACCESS_TOKENS.push(newAccessToken)
@@ -247,7 +247,7 @@ class ServiceXApiCollection {
 
         if (getCache) {
 
-            const cache = ServiceXApiCollection.RECORDS_CACHING[entityName]?.[idRecord]
+            const cache = this.getRecordCache(idRecord, entityName)
 
             if (cache?.id) return [null, cache]
 
@@ -287,12 +287,7 @@ class ServiceXApiCollection {
         if (!data?.id) return [new Error("erro ao localizar os dados da entidade", { cause: data }), null]
 
         if (getCache) {
-
-            const entityCache = ServiceXApiCollection.RECORDS_CACHING[entityName]
-
-            if (isObject(entityCache)) entityCache[idRecord] = data;
-            else ServiceXApiCollection.RECORDS_CACHING[entityName] = { [idRecord]: data };
-
+            this.setRecordCache(data, entityName)
         }
 
         return [null, data]
